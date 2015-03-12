@@ -1,0 +1,23 @@
+{
+  "name": "researchgate/php-constant-doc-comment",
+  "description": "PHP class parser to get the list of class constants doc comments",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Timur Khamrakulov",
+      "email": "timur.khamrakulov@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.5.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "rg\\phpConstantDocComment\\": "src/"
+    }
+  }
+}
