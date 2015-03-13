@@ -7,7 +7,7 @@ use rg\phpConstantDocComment\Constant;
 use rg\phpConstantDocComment\Parser;
 use tests\stubs\ConstantClassStub1;
 
-class ParserTest extends \PHPUnit_Framework_TestCase
+class ConstantParserTest extends \PHPUnit_Framework_TestCase
 {
     public function testParser()
     {
@@ -16,14 +16,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
         $constants = $reader->getClassConstants($class);
 
-        $this->assertTrue(is_array($constants));
-        $this->assertArrayHasKey('TEST_CONSTANT1', $constants);
-        $this->assertArrayHasKey('TEST_CONSTANT2', $constants);
-        $this->assertArrayHasKey('TEST_CONSTANT3', $constants);
 
         $this->assertConstantValues(
             $constants['TEST_CONSTANT1'],
             'TEST_CONSTANT1',
+            'test-value-1',
             '/**
      * @annotations\test1Annotation("annotation value")
      */');
@@ -31,6 +28,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertConstantValues(
             $constants['TEST_CONSTANT2'],
             'TEST_CONSTANT2',
+            'test-value-2',
             '/**
      * @annotations\test2Annotation
      */');
@@ -38,6 +36,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertConstantValues(
             $constants['TEST_CONSTANT3'],
             'TEST_CONSTANT3',
+            '3',
             '/**
      * @annotations\test1Annotation("value1")
      * @annotations\test2Annotation("value2")
@@ -45,9 +44,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    private function assertConstantValues(Constant $constant, $name, $docComment)
+    private function assertConstantValues(Constant $constant, $name, $value, $docComment)
     {
-        $this->assertEquals($name, $constant->getName());
-        $this->assertEquals($docComment, $constant->getDocComment());
+        $this->assertEquals($constant->getName(), $name);
+        $this->assertEquals($constant->getValue(), $value);
+        $this->assertEquals($constant->getDocComment(), $docComment);
     }
 }

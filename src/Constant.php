@@ -9,6 +9,7 @@ namespace rg\phpConstantDocComment;
  */
 class Constant
 {
+
     /**
      * @var string
      */
@@ -20,12 +21,19 @@ class Constant
     private $docComment;
 
     /**
+     * @var string
+     */
+    private $value;
+
+    /**
      * @param string $name
+     * @param string $value
      * @param string $docComment
      */
-    public function __construct($name, $docComment)
+    public function __construct($name, $value, $docComment)
     {
         $this->name = $name;
+        $this->value = $value;
         $this->docComment = $docComment;
     }
 
@@ -35,6 +43,14 @@ class Constant
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 
     /**

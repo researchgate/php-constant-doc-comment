@@ -26,13 +26,20 @@ class Parser
         $content = file_get_contents($fileName);
         $tokens = token_get_all($content);
         $doc = null;
+        $constName = null;
+        $constValue = null;
         $isConst = false;
+        $isValue = false;
         foreach ($tokens as $token) {
-            if (!is_array($token)) {
+            if (!is_array($token) && $token != "=") {
                 continue;
             }
-
-            list($tokenType, $tokenValue) = $token;
+            if ($token != "=") {
+                list($tokenType, $tokenValue) = $token;
+            } else {
+                $tokenType = "=";
+                $tokenValue = null;
+            }
             switch ($tokenType) {
                 // ignored tokens
                 case T_WHITESPACE:
@@ -44,18 +51,34 @@ class Parser
                 case T_CONST:
                     $isConst = true;
                     break;
-                case T_STRING:
-                    if ($isConst) {
-                        $constants[$tokenValue] = new Constant($tokenValue, $doc);
-                    }
-                    $doc = null;
-                    $isConst = false;
+                case "=":
+                    $isValue = true;
                     break;
-
+                case T_STRING:
+                    if ($isConst && !$isValue) {
+                        $constName = $tokenValue;
+                    } else {
+                        $constName = null;
+                        $constValue = null;
+                        $isConst = false;
+                        $isValue = false;
+                    }
+                    break;
+                case T_CONSTANT_ENCAPSED_STRING:
+                    if ($isConst && $isValue) {
+                        $constants[$constName] = new Constant($constName, trim($tokenValue, '"\''), $doc);
+                    }
+                    $constName = null;
+                    $constValue = null;
+                    $isConst = false;
+                    $isValue = false;
+                    break;
                 // all other tokens reset the parser
                 default:
-                    $doc = null;
+                    $constName = null;
+                    $constValue = null;
                     $isConst = false;
+                    $isValue = false;
                     break;
             }
         }
