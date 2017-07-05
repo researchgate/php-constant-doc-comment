@@ -62,6 +62,7 @@ class Parser
                         $constValue = null;
                         $isConst = false;
                         $isValue = false;
+                        $doc = null;
                     }
                     break;
                 case T_CONSTANT_ENCAPSED_STRING:
@@ -74,6 +75,7 @@ class Parser
                     $constValue = null;
                     $isConst = false;
                     $isValue = false;
+                    $doc = null;
                     break;
                 // all other tokens reset the parser
                 default:
@@ -81,6 +83,7 @@ class Parser
                     $constValue = null;
                     $isConst = false;
                     $isValue = false;
+                    $doc = null;
                     break;
             }
         }
