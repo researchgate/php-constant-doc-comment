@@ -65,6 +65,8 @@ class Parser
                     }
                     break;
                 case T_CONSTANT_ENCAPSED_STRING:
+                case T_LNUMBER:
+                case T_DNUMBER:
                     if ($isConst && $isValue) {
                         $constants[$constName] = new Constant($constName, trim($tokenValue, '"\''), $doc);
                     }

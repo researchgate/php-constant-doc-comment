@@ -30,4 +30,9 @@ class ConstantClassStub1 {
      * @annotations\test2Annotation("value2")
      */
     const TEST_CONSTANT3 = '3';
+
+    /**
+    * @annotations\test4Annotation
+    */
+    const TEST_CONSTANT4 = 4;
 }

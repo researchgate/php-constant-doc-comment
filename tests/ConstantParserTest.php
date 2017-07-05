@@ -3,11 +3,12 @@ namespace tests;
 
 require_once __DIR__ . '/stubs/ConstantClassStub1.php';
 
+use PHPUnit\Framework\TestCase;
 use rg\phpConstantDocComment\Constant;
 use rg\phpConstantDocComment\Parser;
 use tests\stubs\ConstantClassStub1;
 
-class ConstantParserTest extends \PHPUnit_Framework_TestCase
+class ConstantParserTest extends TestCase
 {
     public function testParser()
     {
@@ -41,6 +42,14 @@ class ConstantParserTest extends \PHPUnit_Framework_TestCase
      * @annotations\test1Annotation("value1")
      * @annotations\test2Annotation("value2")
      */');
+
+     $this->assertConstantValues(
+            $constants['TEST_CONSTANT4'],
+            'TEST_CONSTANT4',
+            4,
+            '/**
+    * @annotations\test4Annotation
+    */');
 
     }
 
