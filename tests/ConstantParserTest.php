@@ -52,7 +52,19 @@ class ConstantParserTest extends TestCase
     */');
 
     }
+    
+    public function testEmptyDoc()
+    {
+        $class = new \ReflectionClass(ConstantClassStub1::class);
+        $reader = new Parser;
 
+        $constants = $reader->getClassConstants($class);
+        $this->assertConstantValues(
+            $constants['TEST_CONSTANT5'],
+            'TEST_CONSTANT5',
+            5,
+            '');
+    }
     private function assertConstantValues(Constant $constant, $name, $value, $docComment)
     {
         $this->assertEquals($constant->getName(), $name);

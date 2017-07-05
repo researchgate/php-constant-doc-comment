@@ -35,4 +35,7 @@ class ConstantClassStub1 {
     * @annotations\test4Annotation
     */
     const TEST_CONSTANT4 = 4;
+ 
+    const TEST_CONSTANT5 = 5;
+
 }
