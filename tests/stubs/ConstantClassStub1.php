@@ -1,9 +1,22 @@
 <?php
-namespace tests\stubs;
-
 /**
  * @copyright ResearchGate GmbH
  */
+namespace tests\stubs;
+/**
+ * const outside class, don't match that
+ * 
+ */
+const ONE = 1;
+
+
+class OtherClass {
+	/**
+	 * This is a different Comment from a different Class
+	 */
+	const TEST_CONSTANT1 = 'test-value-1';
+}
+
 class ConstantClassStub1 {
 
     /**
@@ -37,5 +50,28 @@ class ConstantClassStub1 {
     const TEST_CONSTANT4 = 4;
  
     const TEST_CONSTANT5 = 5;
+    
+    const TEST_CONSTANT6 = 2**3;
+    
+    /**
+     * As of PHP 5.6.0
+     */
+    const TWO = ONE * 2;
+    const THREE = ONE + self::TWO;
+    const SENTENCE = 'The value of THREE is '.self::THREE;
+    
+    /**
+     * 
+     * As of PHP 5.3.0
+     */
+    const BAR = <<<'EOT'
+bar
+EOT;
 
+}
+class AnotherOtherClass {
+	/**
+	 * This is a different Comment from a different Class
+	 */
+	const TEST_CONSTANT1 = 'test-value-1';
 }

@@ -65,10 +65,59 @@ class ConstantParserTest extends TestCase
             5,
             '');
     }
+    
+    public function testPowValue()
+    {
+        $class = new \ReflectionClass(ConstantClassStub1::class);
+        $reader = new Parser;
+        
+        $constants = $reader->getClassConstants($class);
+        $this->assertConstantValues(
+            $constants['TEST_CONSTANT6'],
+            'TEST_CONSTANT6',
+            8,
+            '');
+    }
+    
+    public function testComplexExpressions()
+    {
+        $class = new \ReflectionClass(ConstantClassStub1::class);
+        $reader = new Parser;
+        
+        $constants = $reader->getClassConstants($class);
+        $this->assertConstantValues(
+            $constants['TWO'],
+            'TWO',
+            2,
+            '/**
+     * As of PHP 5.6.0
+     */');
+        $this->assertConstantValues(
+            $constants['THREE'],
+            'THREE',
+            3,
+            '');
+        $this->assertConstantValues(
+            $constants['SENTENCE'],
+            'SENTENCE',
+            'The value of THREE is 3',
+            '');
+        
+        //HEREDOC
+        $this->assertConstantValues(
+            $constants['BAR'],
+            'BAR',
+            'bar',
+            '/**
+     * 
+     * As of PHP 5.3.0
+     */');
+    }
+    
     private function assertConstantValues(Constant $constant, $name, $value, $docComment)
     {
-        $this->assertEquals($constant->getName(), $name);
-        $this->assertEquals($constant->getValue(), $value);
-        $this->assertEquals($constant->getDocComment(), $docComment);
+        $this->assertEquals($name, $constant->getName() );
+        $this->assertEquals($value, $constant->getValue());
+        $this->assertEquals($docComment, $constant->getDocComment());
     }
 }
