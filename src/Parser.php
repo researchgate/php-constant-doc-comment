@@ -25,69 +25,56 @@ class Parser
         }
         $content = file_get_contents($fileName);
         $tokens = token_get_all($content);
-        $doc = null;
-        $constName = null;
-        $constValue = null;
-        $isConst = false;
-        $isValue = false;
+        
+        $nextPart = null;
+        $nextStop = T_CLASS;
+        $doc = '';
+        $insideClass = false;
         foreach ($tokens as $token) {
-            if (!is_array($token) && $token != "=") {
-                continue;
+            $keyWord = is_array($token) ? $token[0] : $token;
+            if($keyWord == T_CLASS && $insideClass) {
+                //We are done with the class in question
+                return $constants;
             }
-            if ($token != "=") {
-                list($tokenType, $tokenValue) = $token;
+            if($keyWord == T_DOC_COMMENT) {
+                $doc = $token[1];
+            } else if($keyWord == $nextStop) {
+                if($nextStop == T_CLASS) {
+                    $nextPart = 'className';
+                }
+                else if($nextStop == T_CONST) {
+                    $nextPart = 'name';
+                    $nextStop = '=';
+                } else if($nextStop == '=') {
+                    $nextPart = null;
+                    $nextStop = T_CONST;
+                }
             } else {
-                $tokenType = "=";
-                $tokenValue = null;
-            }
-            switch ($tokenType) {
-                // ignored tokens
-                case T_WHITESPACE:
-                case T_COMMENT:
-                    break;
-                case T_DOC_COMMENT:
-                    $doc = $tokenValue;
-                    break;
-                case T_CONST:
-                    $isConst = true;
-                    break;
-                case "=":
-                    $isValue = true;
-                    break;
-                case T_STRING:
-                    if ($isConst && !$isValue) {
-                        $constName = $tokenValue;
+                if($nextPart == 'className') {
+                    if($keyWord == T_WHITESPACE || $keyWord == T_COMMENT) {
+                        continue;
                     } else {
-                        $constName = null;
-                        $constValue = null;
-                        $isConst = false;
-                        $isValue = false;
-                        $doc = null;
+                        $className = $token[1];
+                        if($className == $class->getShortName()) {
+                            $insideClass = true;
+                            $nextPart = null;
+                            $nextStop = T_CONST;
+                        }
                     }
-                    break;
-                case T_CONSTANT_ENCAPSED_STRING:
-                case T_LNUMBER:
-                case T_DNUMBER:
-                    if ($isConst && $isValue) {
-                        $constants[$constName] = new Constant($constName, trim($tokenValue, '"\''), $doc);
+                }
+                else if($nextPart == 'name') {
+                    if($keyWord == T_WHITESPACE || $keyWord == T_COMMENT) {
+                        continue;
+                    } else {
+                        $constName = $token[1];
+                        $constValue = $class->getConstant($constName);
+                        $constants[$constName] = new Constant($constName, $constValue, $doc);
+                        $doc = '';
                     }
-                    $constName = null;
-                    $constValue = null;
-                    $isConst = false;
-                    $isValue = false;
-                    $doc = null;
-                    break;
-                // all other tokens reset the parser
-                default:
-                    $constName = null;
-                    $constValue = null;
-                    $isConst = false;
-                    $isValue = false;
-                    $doc = null;
-                    break;
+                }
             }
         }
-
+        
         return $constants;
     }
 
